@@ -226,7 +226,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         action = request.path.removeprefix('/api/')
         if action.startswith(('bootstrap-', 'evaluation-')):
-            self.reply(409, {'error':'Policy modes are not distributed in this local research release.'})
+            self.reply(409, {'error':'Policy inference is unavailable.'})
             return
         confirmations = {'reset': 'RESET', 'test': 'TEST', 'release': 'RELEASE',
                          'gripper-force': 'GRIPPER_FORCE', 'teach-rest': 'TEACH_REST',

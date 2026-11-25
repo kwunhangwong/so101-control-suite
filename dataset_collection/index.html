@@ -8,8 +8,8 @@
 </head>
 <body>
 <main>
-  <header><div><p class="eyebrow">SO-101 / DATASET</p><h1>Dataset collection</h1><p class="intro">Record and edit your own robot demonstrations.</p></div><span id="mode" class="badge">CONNECTING</span></header>
-  <nav class="view-switch" aria-label="Dataset mode"><button id="record-view-button" class="primary" aria-pressed="true">Collect dataset</button><button id="clean-view-button" aria-pressed="false">Seed data cleaning</button><button hidden disabled title="Policy integration is not included in this release" id="bootstrap-clean-view-button" aria-pressed="false">Bootstrap buffer cleaning</button></nav>
+  <header><div><p class="eyebrow">SO-101 / DATASET</p><h1>Dataset collection</h1><p class="intro">Record and edit robot demonstrations.</p></div><span id="mode" class="badge">CONNECTING</span></header>
+  <nav class="view-switch" aria-label="Dataset mode"><button id="record-view-button" class="primary" aria-pressed="true">Collect dataset</button><button id="clean-view-button" aria-pressed="false">Seed data cleaning</button><button hidden disabled title="Policy integration unavailable" id="bootstrap-clean-view-button" aria-pressed="false">Bootstrap buffer cleaning</button></nav>
   <div id="record-view">
   <section class="panel controls" aria-label="Connection and reset">
     <div class="actions"><button id="check-connections" disabled>Check Connection</button><button id="reset" class="primary" aria-describedby="reset-note" disabled>Clear Error &amp; Reset</button><button id="stop" class="stop" hidden disabled>Stop &amp; hold</button></div>
@@ -30,12 +30,12 @@
   <section class="panel recording" aria-labelledby="recording-heading">
     <div class="camera-heading"><div><p id="collection-eyebrow" class="eyebrow">SEED DEMONSTRATION · BOTH CAMERAS</p><h2 id="recording-heading">Record episode</h2></div><span id="episode-status" class="badge">READY</span></div>
     <div class="recording-body">
-      <p>Local research release: camera setup, calibration, recording and editing are available. Policy inference requires your own separately supplied integration; no Codex or cluster connection is included.</p>
+      <p>Record a demonstration with the leader arm, then review and edit it in Seed data cleaning. Policy inference modes are currently unavailable.</p>
       <div class="collection-modes" role="group" aria-label="Episode collection mode">
         <button type="button" data-collection-mode="seed" aria-pressed="true" class="is-selected"><span class="mode-number">01</span><strong>Seed collection</strong><small>Human leader → follower</small></button>
-        <button type="button" disabled title="Not included: supply your own policy integration" data-collection-mode="evaluation" aria-pressed="false"><span class="mode-number">02</span><strong>Evaluation</strong><small>DiT / SmolVLA → follower</small></button>
-        <button type="button" disabled title="Not included: supply your own policy integration" data-collection-mode="gpt" aria-pressed="false"><span class="mode-number">03</span><strong>GPT Bootstrap</strong><small>Your Codex + seed trajectory</small></button>
-        <button type="button" disabled title="Not included: supply your own policy integration" data-collection-mode="dagger" aria-pressed="false"><span class="mode-number">04</span><strong>DiT + GPT DAgger</strong><small>DiT policy + GPT takeover</small></button>
+        <button type="button" disabled title="Policy integration unavailable" data-collection-mode="evaluation" aria-pressed="false"><span class="mode-number">02</span><strong>Evaluation</strong><small>DiT / SmolVLA → follower</small></button>
+        <button type="button" disabled title="Policy integration unavailable" data-collection-mode="gpt" aria-pressed="false"><span class="mode-number">03</span><strong>GPT Bootstrap</strong><small>GPT + seed trajectory</small></button>
+        <button type="button" disabled title="Policy integration unavailable" data-collection-mode="dagger" aria-pressed="false"><span class="mode-number">04</span><strong>DiT + GPT DAgger</strong><small>DiT policy + GPT takeover</small></button>
       </div>
       <div id="collection-task-fields">
       <label for="instruction">Task instruction</label><input id="instruction" maxlength="500" placeholder="Describe what the robot should do" autocomplete="off">

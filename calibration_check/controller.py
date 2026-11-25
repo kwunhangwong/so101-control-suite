@@ -178,11 +178,11 @@ class CalibrationController:
             if session not in self.clients:
                 raise ValueError('Open the calibration interface before operating the arm.')
             if action.startswith('bootstrap-'):
-                raise ValueError('GPT policy is not included in this release.')
+                raise ValueError('GPT policy integration is unavailable.')
             if self.bootstrap and (self.bootstrap_owner or self.bootstrap.recorder.snapshot()['status'] == 'awaiting_label') and action != 'stop':
                 raise ValueError('End and label the GPT rollout before starting another operation.')
             if action.startswith('evaluation-'):
-                raise ValueError('Remote policy inference is not included in this release.')
+                raise ValueError('Policy inference is unavailable.')
             if self.evaluation and (self.evaluation_owner or self.evaluation.recorder.snapshot()['status'] == 'awaiting_label') and action != 'stop':
                 raise ValueError('End and label the evaluation before starting another operation.')
             if action.startswith('episode-'):
