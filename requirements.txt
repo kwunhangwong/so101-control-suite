@@ -1,0 +1,4 @@
+pyserial==3.5
+feetech-servo-sdk==1.0.0
+Pillow==12.3.0
+av==16.1.0

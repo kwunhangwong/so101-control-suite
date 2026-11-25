@@ -1,0 +1,21 @@
+SO-101 Control Suite
+Copyright 2026 kwunhangwong and contributors
+
+This source distribution uses the Apache License, Version 2.0.
+
+Calibration references the Feetech calibration conventions in Hugging Face
+LeRobot v0.4.0 (Apache-2.0, Copyright 2024 The HuggingFace Inc. team):
+https://github.com/huggingface/lerobot/blob/v0.4.0/src/lerobot/motors/feetech/feetech.py
+https://github.com/huggingface/lerobot/blob/v0.4.0/LICENSE
+
+Runtime dependencies are installed separately; their licenses remain applicable:
+pyserial (BSD-3-Clause), feetech-servo-sdk (Unlicense), Pillow (MIT-CMU),
+PyAV (BSD-3-Clause). PyAV wheels include FFmpeg components with their own
+licensing; consult the installed distribution and its build details.
+Apple frameworks and developer tools are supplied by macOS, not this repository.
+
+The earlier private research application included optional GPT/DiT integrations.
+Those policy implementations, model assets, remote-cluster configuration,
+credentials, recorded images and research datasets are excluded from this release.
+GPT-Policy upstream currently grants no redistribution license:
+https://github.com/cheng-haha/GPT-Policy/blob/main/LICENSE

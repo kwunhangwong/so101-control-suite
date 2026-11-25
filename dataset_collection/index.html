@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark"><title>SO-101 · Dataset collection</title>
+  <link rel="icon" href="data:,"><link rel="stylesheet" href="/dataset/styles.css">
+  <script type="module" src="/dataset/app.js"></script>
+</head>
+<body>
+<main>
+  <header><div><p class="eyebrow">SO-101 / DATASET</p><h1>Dataset collection</h1><p class="intro">Record and edit your own robot demonstrations.</p></div><span id="mode" class="badge">CONNECTING</span></header>
+  <nav class="view-switch" aria-label="Dataset mode"><button id="record-view-button" class="primary" aria-pressed="true">Collect dataset</button><button id="clean-view-button" aria-pressed="false">Seed data cleaning</button><button hidden disabled title="Policy integration is not included in this release" id="bootstrap-clean-view-button" aria-pressed="false">Bootstrap buffer cleaning</button></nav>
+  <div id="record-view">
+  <section class="panel controls" aria-label="Connection and reset">
+    <div class="actions"><button id="check-connections" disabled>Check Connection</button><button id="reset" class="primary" aria-describedby="reset-note" disabled>Clear Error &amp; Reset</button><button id="stop" class="stop" hidden disabled>Stop &amp; hold</button></div>
+    <ul class="devices">
+      <li data-device="wrist"><span class="symbol" aria-hidden="true">✗</span><div><strong>Wrist camera</strong><span class="detail">Not checked</span></div></li>
+      <li data-device="front"><span class="symbol" aria-hidden="true">✗</span><div><strong>Front camera</strong><span class="detail">Not checked</span></div></li>
+      <li data-device="leader"><span class="symbol" aria-hidden="true">✗</span><div><strong>Leader arm</strong><span class="detail">Not checked</span></div></li>
+      <li data-device="follower"><span class="symbol" aria-hidden="true">✗</span><div><strong>Follower arm</strong><span class="detail">Not checked</span></div></li>
+    </ul>
+    <p id="connection-summary" role="status">Not checked. Check all four devices before starting.</p>
+    <p id="reset-note">Reset uses your saved resting pose, with a gentle start and stop at up to 10°/s. Clear the path and remove any gripper obstruction first.</p>
+  </section>
+  <p id="alert" class="alert" role="alert" hidden></p>
+  <section class="cameras" aria-label="Live camera regions">
+    <article class="panel camera"><div class="camera-heading"><div><p class="eyebrow">SAVED ROI · FRONT</p><h2>Front camera</h2></div><span id="front-status" class="badge">CONNECTING</span></div><div class="viewport"><canvas id="front-frame" aria-label="Live front camera cropped to saved ROI" hidden></canvas><p id="front-placeholder">Waiting for the front camera…</p></div><p id="front-roi" class="roi-note">Loading saved front ROI…</p></article>
+    <article class="panel camera"><div class="camera-heading"><div><p class="eyebrow">SAVED ROI · WRIST</p><h2>Wrist camera</h2></div><span id="wrist-status" class="badge">CONNECTING</span></div><div class="viewport"><canvas id="wrist-frame" aria-label="Live wrist camera cropped to saved ROI" hidden></canvas><p id="wrist-placeholder">Waiting for the wrist camera…</p></div><p id="wrist-roi" class="roi-note">Loading saved wrist ROI…</p></article>
+  </section>
+  <section class="panel recording" aria-labelledby="recording-heading">
+    <div class="camera-heading"><div><p id="collection-eyebrow" class="eyebrow">SEED DEMONSTRATION · BOTH CAMERAS</p><h2 id="recording-heading">Record episode</h2></div><span id="episode-status" class="badge">READY</span></div>
+    <div class="recording-body">
+      <p>Local research release: camera setup, calibration, recording and editing are available. Policy inference requires your own separately supplied integration; no Codex or cluster connection is included.</p>
+      <div class="collection-modes" role="group" aria-label="Episode collection mode">
+        <button type="button" data-collection-mode="seed" aria-pressed="true" class="is-selected"><span class="mode-number">01</span><strong>Seed collection</strong><small>Human leader → follower</small></button>
+        <button type="button" disabled title="Not included: supply your own policy integration" data-collection-mode="evaluation" aria-pressed="false"><span class="mode-number">02</span><strong>Evaluation</strong><small>DiT / SmolVLA → follower</small></button>
+        <button type="button" disabled title="Not included: supply your own policy integration" data-collection-mode="gpt" aria-pressed="false"><span class="mode-number">03</span><strong>GPT Bootstrap</strong><small>Your Codex + seed trajectory</small></button>
+        <button type="button" disabled title="Not included: supply your own policy integration" data-collection-mode="dagger" aria-pressed="false"><span class="mode-number">04</span><strong>DiT + GPT DAgger</strong><small>DiT policy + GPT takeover</small></button>
+      </div>
+      <div id="collection-task-fields">
+      <label for="instruction">Task instruction</label><input id="instruction" maxlength="500" placeholder="Describe what the robot should do" autocomplete="off">
+      <select id="instruction-history" class="input-history" aria-label="Recent task instructions" disabled><option value="">Recent task instructions</option></select>
+      <label for="success-condition">Success condition</label><input id="success-condition" maxlength="500" placeholder="Describe what must be true at the end" autocomplete="off">
+      <select id="success-condition-history" class="input-history" aria-label="Recent success conditions" disabled><option value="">Recent success conditions</option></select>
+      <p class="history-note">Remembers the latest 5 unique entries in each field on this browser. Choose one to fill the field.</p>
+      </div>
+      <div id="seed-collection-panel">
+      <p id="recording-note">Start records both saved camera regions and joint data, and starts leader–follower control. Put the arms in similar poses before starting. End stops following and retains holding torque.</p>
+      <div class="actions"><button id="episode-start" class="primary" disabled>Start Recording Episode</button><button id="episode-end" class="stop" disabled>End Recording Episode</button></div>
+      <p id="episode-progress" role="status">No episode recorded yet.</p>
+      <div id="episode-labels" class="outcome" role="group" aria-labelledby="outcome-heading" hidden><h3 id="outcome-heading">Label this episode to finish</h3><p>Choose Success or Failure before recording another episode.</p><div class="actions"><button id="episode-success" class="primary">Success</button><button id="episode-failure">Failure</button></div></div>
+      <p id="episode-error" class="alert" role="alert" hidden></p>
+      <p class="directory-label">Latest episode directory</p><code id="episode-path">No episode saved yet.</code>
+      </div>
+    </div>
+  </section>
+  </div>
+  <section id="clean-view" class="panel cleaning" aria-labelledby="clean-heading" hidden>
+    <div class="camera-heading"><div><p class="eyebrow">REVIEW RECORDED FRAMES</p><h2 id="clean-heading">Seed data cleaning</h2></div></div>
+    <div class="cleaning-body">
+      <section id="cleaned-buffer-picker" aria-labelledby="cleaned-buffer-heading">
+        <h3 id="cleaned-buffer-heading">Load cleaned buffer</h3>
+        <label for="cleaned-buffer-path">Cleaned episode folder</label>
+        <input id="cleaned-buffer-path" type="text" value="" spellcheck="false">
+        <div class="actions"><button id="cleaned-buffer-load">Load cleaned buffer</button><button id="clean-original-load">Load original recordings</button></div>
+        <p id="clean-source-mode">Original recordings: Save cleaned copy keeps the source recording.</p>
+      </section>
+      <div id="clean-buffer-picker" hidden><label for="clean-buffer">Bootstrap buffer</label><div class="episode-picker"><select id="clean-buffer"><option value="">Choose a buffer…</option></select><button id="clean-buffer-refresh">Refresh buffers</button><button id="clean-buffer-merge" disabled>Merge Buffer</button><button id="clean-buffer-delete" class="stop" disabled>Delete Buffer</button></div><p id="clean-buffer-note">Edits replace local recordings in place. Prepare local buffer refreshes retrieval without uploading the buffer. The original seed is kept.</p></div>
+      <div id="clean-buffer-merge-confirm" class="outcome" role="group" aria-labelledby="clean-buffer-merge-heading" hidden>
+        <h3 id="clean-buffer-merge-heading">Merge into the current buffer</h3>
+        <p>Keep the current buffer's name. Choose another buffer for the same task to move into it.</p>
+        <label for="clean-buffer-merge-source">Buffer to merge and remove</label>
+        <select id="clean-buffer-merge-source"><option value="">Choose another buffer…</option></select>
+        <p id="clean-buffer-merge-summary" role="status"></p>
+        <p>Episodes, labels, token logs and original seed references are retained. The selected source folder is removed from the buffer list; its metadata is preserved inside the current buffer. All compatible original seeds become eligible for GPT retrieval. This merge cannot be undone in the app.</p>
+        <div class="actions"><button id="clean-buffer-merge-yes" class="primary" disabled>Confirm merge</button><button id="clean-buffer-merge-cancel">Cancel</button></div>
+      </div>
+      <div id="clean-buffer-delete-confirm" class="outcome" role="group" aria-labelledby="clean-buffer-delete-heading" hidden>
+        <h3 id="clean-buffer-delete-heading">Delete this entire local buffer?</h3>
+        <p id="clean-buffer-delete-summary"></p>
+        <code id="clean-buffer-delete-path" class="path"></code>
+        <p id="clean-buffer-delete-note">Permanently removes every rollout in this buffer, their images, robot data, logs and cached seed/reference copies. The original cleaned seed and other buffers stay available. This cannot be undone.</p>
+        <div class="actions"><button id="clean-buffer-delete-yes" class="stop">Delete local buffer</button><button id="clean-buffer-delete-cancel">Cancel</button></div>
+      </div>
+      <p id="clean-sync-status" role="status" hidden></p><button id="clean-retry" hidden>Retry local cleanup</button>
+      <label for="clean-episode">Recorded episode · newest first</label>
+      <div class="episode-picker"><select id="clean-episode"><option value="">Loading episodes…</option></select><button id="clean-refresh">Refresh episodes</button><button id="clean-delete" class="stop" disabled>Delete Episode</button></div>
+      <div id="clean-delete-confirm" class="outcome" role="group" aria-labelledby="clean-delete-heading" hidden>
+        <h3 id="clean-delete-heading">Delete this entire episode?</h3>
+        <p id="clean-delete-note">Permanently removes this recording, including both camera views, joint data, and metadata. Cleaned copies are kept.</p>
+        <code id="clean-delete-path" class="path"></code>
+        <div class="actions"><button id="clean-delete-yes" class="stop">Delete permanently</button><button id="clean-delete-cancel">Cancel</button></div>
+      </div>
+      <p id="clean-delete-status" role="status"></p>
+      <p id="clean-token-usage" hidden></p><p id="clean-task"></p><p id="clean-source" class="path"></p>
+      <p id="clean-error" class="alert" role="alert" hidden></p>
+      <div id="clean-editor" hidden>
+        <div class="cameras recorded-cameras">
+          <article><h3>Front camera · recorded ROI</h3><div class="viewport"><img id="clean-front" alt="Recorded front camera frame"></div></article>
+          <article><h3>Wrist camera · recorded ROI</h3><div class="viewport"><img id="clean-wrist" alt="Recorded wrist camera frame"></div></article>
+        </div>
+        <p id="clean-frame-info" role="status"></p>
+        <label for="clean-scrubber">Frame timeline</label><input id="clean-scrubber" type="range" min="0" max="0" value="0" step="1">
+        <div id="clean-timeline" aria-label="Green frames are kept; red frames are excluded; amber frames mark section splits"></div>
+        <div class="actions"><button id="clean-prev">Previous frame</button><button id="clean-next">Next frame</button><button id="clean-toggle">Exclude this frame</button></div>
+        <div id="clean-noops-controls" class="range-fields"><label for="clean-noops-threshold">Pose threshold (encoder ticks)<input id="clean-noops-threshold" type="number" min="0" max="4095" step="1" value="25"></label><button id="clean-noops">Remove no-ops</button></div>
+        <p id="clean-noops-note">Compare against the last retained pose within each sequence. Exclude a frame only when the five arm joints and their targets are within the threshold and measured and commanded gripper values are unchanged. Returns to earlier poses and gripper changes are preserved. 0 = exact duplicates. Review every proposed exclusion before saving.</p><p id="clean-noops-status" role="status"></p>
+        <div class="range-fields"><label for="clean-from">From frame<input id="clean-from" type="number" min="1" value="1"></label><button id="clean-mark-from">Set start here</button><label for="clean-to">To frame<input id="clean-to" type="number" min="1" value="1"></label><button id="clean-mark-to">Set end here</button></div>
+        <div class="actions"><button id="clean-exclude">Exclude range</button><button id="clean-split">Remove section &amp; split</button><button id="clean-restore">Restore range</button><button id="clean-restore-all">Restore all frames</button></div>
+        <p id="clean-summary"></p><p id="clean-ranges"></p>
+        <p id="clean-help">Frame numbers start at 1. Excluding a frame removes both camera views and its time interval from the cleaned copy. Ordinary exclusions join the retained frames into one trajectory. Remove section &amp; split saves separate trajectories on either side. Source recordings stay available.</p>
+        <div class="actions"><button id="clean-save" class="primary">Save cleaned copy</button><button id="clean-preview">Generate preview</button></div>
+        <section id="clean-preview-panel" class="seed-preview" aria-labelledby="clean-preview-heading" hidden>
+          <h3 id="clean-preview-heading">Clipped episode preview</h3>
+          <p>Front camera on the left · wrist camera on the right. Excluded intervals are skipped; retained sections play in order. One preview MP4 stays on disk after saving or closing the app. Generate preview rebuilds it from the currently selected episode and exclusions, replacing the previous video.</p>
+          <p>Preview episode</p><code id="clean-preview-source" class="path"></code>
+          <video id="clean-preview-video" controls playsinline preload="metadata" aria-label="Clipped episode preview video" hidden></video>
+          <p id="clean-preview-status" role="status"></p>
+        </section>
+        <div id="clean-save-confirm" class="outcome" hidden><h3 id="clean-save-heading">Replace this local episode in place?</h3><p id="clean-save-note">The excluded camera pairs and aligned robot samples will be removed permanently. Confirm the outcome of the retained clip.</p><code id="clean-save-path" class="path"></code><div id="clean-outcome-field"><label for="clean-outcome">Retained clip outcome</label><select id="clean-outcome"><option value="">Choose Success or Failure</option><option value="success">Success</option><option value="failure">Failure</option></select></div><div class="actions"><button id="clean-save-yes" class="primary">Replace local episode</button><button id="clean-save-cancel">Cancel</button></div></div>
+        <p id="clean-save-status" role="status"></p><p id="clean-output-label" class="directory-label">Latest cleaned copy directory</p><code id="clean-output" class="path">No cleaned copy saved yet.</code>
+      </div>
+    </div>
+  </section>
+  <section class="panel live-log-panel" aria-labelledby="live-log-heading">
+    <div class="camera-heading"><div><p class="eyebrow">LOCAL DEVICE EVENTS</p><h2 id="live-log-heading">Live log</h2></div><span id="log-status" class="badge">CONNECTING</span></div>
+    <p id="log-summary">Device status, episode events, warnings and errors · latest 200 entries · local time.</p>
+    <p id="log-current-error" class="alert" hidden></p>
+    <p id="log-warnings" hidden></p>
+    <div id="live-log" role="log" aria-label="Shared application log" aria-live="polite" aria-relevant="additions text"><p>Waiting for events…</p></div>
+  </section>
+  <footer><p id="message" role="status">Connecting for read-only inspection…</p><p>Save changes in the Camera Setup app; these previews update automatically. Close the Camera Setup app after saving.</p><p>Cameras close when the last Calibration or Dataset Collection page closes. Motor holding torque stays on.</p><div class="footer-links"><a href="/">Open Calibration</a><span>Seed recordings · images + joints + outcome</span></div></footer>
+</main>
+</body>
+</html>

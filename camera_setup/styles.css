@@ -1,0 +1,71 @@
+:root { color-scheme:dark; font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:#e8eef5; background:#0b1018; font-synthesis:none; }
+* { box-sizing:border-box; }
+body { margin:0; }
+button,input { font:inherit; }
+button { cursor:pointer; }
+button:disabled { opacity:.45; cursor:default; }
+button:focus-visible,input:focus-visible,canvas:focus-visible { outline:2px solid #64d9f2; outline-offset:4px; }
+.app { max-width:1540px; margin:auto; padding:32px 36px 22px; }
+.app-header,.brand,.header-actions,.panel-heading,.frame-footer,.bounds-heading,.app-footer { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.app-header { margin-bottom:30px; }
+.camera-switcher { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:22px; }
+.camera-tile { display:flex; align-items:center; gap:18px; min-width:0; padding:10px 14px 10px 10px; color:#d2dce7; background:#111923; border:1px solid #273241; border-radius:10px; text-align:left; }
+.camera-tile[aria-pressed="true"] { border-color:#72d9ed; background:#14242e; }
+.camera-tile canvas { display:block; width:140px; max-width:40%; height:auto; background:#090d13; border-radius:5px; }
+.camera-tile-label { display:flex; flex:1; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:13px; }
+.brand { justify-content:flex-start; }
+.brand-mark { display:grid; place-items:center; width:44px; height:44px; border:1px solid #315061; color:#6cdcf1; border-radius:12px; font-size:32px; }
+.eyebrow { color:#8191a5; font-size:10px; font-weight:600; letter-spacing:.13em; }
+h1 { margin:5px 0 0; font-size:24px; font-weight:550; letter-spacing:-.7px; }
+h2 { margin:5px 0 0; font-size:17px; font-weight:500; }
+h3 { margin:0; font-size:13px; font-weight:500; }
+.button { display:inline-flex; align-items:center; justify-content:center; gap:18px; border:1px solid #334152; border-radius:8px; padding:10px 14px; font-size:12px; font-weight:550; white-space:nowrap; transition:background .15s,border-color .15s; }
+.primary { background:#9ae4f2; border-color:#9ae4f2; color:#102129; }
+.primary:hover:not(:disabled) { background:#c2f4fc; }
+.secondary { background:#17202b; color:#d2dce7; }
+.secondary:hover:not(:disabled) { background:#233140; border-color:#506379; }
+.save-state { font-size:12px; color:#8da092; }
+.save-state.dirty { color:#ebc08c; }
+.workspace { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:22px; align-items:start; }
+.viewer,.panel { background:#111923; border:1px solid #273241; border-radius:13px; overflow:hidden; }
+.panel-heading { padding:19px 20px; }
+.compact { padding:0; margin-bottom:16px; }
+.tag { color:#a1b0c2; border:1px solid #344354; font-size:10px; letter-spacing:.04em; border-radius:5px; padding:6px 8px; white-space:nowrap; }
+.tag.live { color:#92e4b7; border-color:#315b46; }
+.mono { font-family:"SFMono-Regular",Consolas,monospace; font-variant-numeric:tabular-nums; letter-spacing:-.3px; }
+.stage { background:#090d13; }
+#frame { display:block; width:100%; height:auto; touch-action:none; cursor:crosshair; }
+.frame-footer { padding:14px 20px; font-size:11px; color:#8192a7; border-top:1px solid #24303d; }
+.frame-footer>span:last-child { display:flex; align-items:center; gap:7px; }
+.selection-dot { width:7px; height:7px; border-radius:2px; background:#72d9ed; }
+.interaction-guide { display:flex; flex-wrap:wrap; gap:8px 20px; padding:0 20px 18px; color:#687a8f; font-size:11px; }
+.interaction-guide span::before { content:"·"; color:#a5b5c6; margin-right:6px; }
+.sidebar { display:grid; gap:18px; }
+.panel { padding:20px; }
+.crop-stage { min-height:120px; background:#080d13; border:1px solid #293643; border-radius:8px; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+#crop { width:100%; height:auto; display:block; }
+.bounds-heading { margin:22px 0 13px; }
+.bounds-heading span { color:#73869c; font-size:10px; }
+.bounds-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+label { display:block; color:#94a6bb; font-size:11px; }
+input { width:100%; color:#e2ebf4; background:#0c131d; border:1px solid #324152; border-radius:6px; padding:10px 11px; margin-top:7px; font-size:13px; font-variant-numeric:tabular-nums; }
+input:invalid { border-color:#ad655e; }
+.coordinate-note { color:#6e829a; font-size:11px; line-height:1.6; margin:13px 0 0; }
+.error { color:#f1a79b; font-size:11px; line-height:1.5; margin:10px 0 0; }
+.error:empty { display:none; }
+.source-panel>p:first-of-type { color:#b3c2d3; font-size:12px; line-height:1.5; overflow-wrap:anywhere; }
+.source-actions { display:grid; grid-template-columns:1fr; gap:10px; }
+.auto-exposure { display:flex;align-items:center;gap:8px;margin:16px 0;font-size:12px; }
+.auto-exposure input { width:auto;margin:0;accent-color:#9ae4f2; }
+.camera-control { display:grid;grid-template-columns:minmax(0,1fr) 80px;align-items:center;gap:10px;margin:0 0 18px; }
+.camera-control input[type=range] { padding:0;accent-color:#9ae4f2; }
+.source-panel output { float:right;color:#c9e1e9;font-variant-numeric:tabular-nums; }
+#camera-controls-status.failed { color:#f1a79b; }
+[hidden] { display:none!important; }
+.app-footer { align-items:flex-start; margin-top:23px; color:#6e839b; font-size:11px; line-height:1.6; }
+.app-footer p { margin:0; }
+.app-footer>span { white-space:nowrap; }
+@media (max-width:1100px) { .app{padding:24px}.workspace{grid-template-columns:minmax(0,1fr) 300px;gap:16px}.panel{padding:16px}.header-actions{gap:10px} }
+@media (max-width:880px) { .workspace{grid-template-columns:1fr}.sidebar{grid-template-columns:1fr 1fr;align-items:start}.app-header{gap:20px;flex-wrap:wrap}.app-footer{flex-wrap:wrap}.save-state{margin-right:auto}.header-actions{flex:1;justify-content:flex-end} }
+@media (max-width:560px) { .app{padding:20px 14px}.sidebar{grid-template-columns:1fr}.header-actions{flex-basis:100%;justify-content:space-between}.panel-heading{padding:15px}.compact{padding:0}.frame-footer{padding:12px 15px}.interaction-guide{padding:0 15px 15px;gap:6px 10px}.tag{font-size:9px}h1{font-size:23px}.app-header{margin-bottom:20px}.camera-tile{display:block;padding:8px}.camera-tile canvas{max-width:none;width:100%;margin-bottom:10px}.camera-tile-label{font-size:12px}.camera-switcher{gap:10px} }
+@media (prefers-reduced-motion:reduce) { .button{transition:none} }

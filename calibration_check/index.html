@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark"><title>SO-101 · Calibration check</title>
+  <link rel="icon" href="data:,"><link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script>
+</head>
+<body>
+<main class="app">
+  <header class="header"><div><p class="eyebrow">SO-101 / CALIBRATION</p><h1>Calibration check</h1></div><span id="mode" class="badge">CONNECTING</span></header>
+  <p class="intro">Check connections, reset the arm, test following, redo calibration, or adjust gripper force.</p>
+  <section class="panel connection-check" aria-label="Connection and reset">
+    <div class="connection-check-heading"><div><p class="eyebrow">DEVICE CONNECTIONS</p><p id="connection-summary" role="status" aria-live="polite">Not checked. Check all four devices before starting.</p></div><div class="connection-actions"><button id="check-connections" class="button secondary" disabled>Check Connection</button><button id="teach-rest" class="button secondary" disabled title="Read the leader pose without moving the follower">Teach resting pose</button><button id="reset" class="button primary" aria-describedby="alignment-summary" disabled>Clear Error &amp; Reset</button><button id="test" class="button secondary" disabled>Calibration Test</button><button id="recalibrate" class="button secondary" disabled>Re-calibration</button><button id="gripper-force" class="button secondary" disabled>Gripper Force</button></div></div>
+    <ul class="connection-list">
+      <li data-device="wrist"><span class="check-symbol" aria-hidden="true">✗</span><div><strong>Wrist camera</strong><span class="check-detail">Not checked</span></div></li>
+      <li data-device="front"><span class="check-symbol" aria-hidden="true">✗</span><div><strong>Front camera</strong><span class="check-detail">Not checked</span></div></li>
+      <li data-device="leader"><span class="check-symbol" aria-hidden="true">✗</span><div><strong>Leader arm</strong><span class="check-detail">Not checked</span></div></li>
+      <li data-device="follower"><span class="check-symbol" aria-hidden="true">✗</span><div><strong>Follower arm</strong><span class="check-detail">Not checked</span></div></li>
+    </ul>
+    <div class="alignment-status"><p id="alignment-summary" role="status">Reset slowly returns to the saved resting pose at up to 10°/s, with a gentle start and stop, then holds.</p><button id="stop" class="button stop" hidden disabled>Stop & hold</button></div>
+  </section>
+  <section id="recalibration-panel" class="panel wizard" hidden aria-labelledby="recalibration-title">
+    <p class="eyebrow">GUIDED RE-CALIBRATION / BOTH ARMS</p><h2 id="recalibration-title">Capture joint centers</h2>
+    <p id="recalibration-instructions"></p>
+    <p class="wizard-note">Both arms remain torque OFF. Support each arm while moving it by hand. Do not force joints against their stops. Wrist roll uses its captured center and the full encoder range.</p>
+    <div id="range-table" class="table-scroll" hidden><table><thead><tr><th>Joint</th><th>Leader span</th><th>Follower span</th></tr></thead><tbody id="ranges"></tbody></table></div>
+    <label id="range-confirmation" class="checkbox" hidden><input id="ranges-complete" type="checkbox">I moved each joint on both arms through its full comfortable range and checked the values below.</label>
+    <div class="wizard-actions"><button id="calibration-next" class="button primary">Capture centers</button><button id="calibration-cancel" class="button secondary">Cancel re-calibration</button></div>
+    <p class="wizard-note"><a href="https://huggingface.co/docs/lerobot/so101#calibrate" target="_blank" rel="noopener">SO-101 center-pose and range guide ↗</a></p>
+  </section>
+  <div id="alert" class="alert" role="alert" hidden></div>
+  <section class="panel log-panel" aria-labelledby="log-title">
+    <p class="eyebrow">WARNING-ONLY MOTION CHECKS</p><h2 id="log-title">Live log</h2>
+    <p class="log-note">Local time · Latest 200 events in this app session. Motor faults and lost communication remain errors. Stop &amp; hold stops movement.</p>
+    <p id="motion-warnings" class="motion-warnings" role="status" hidden></p>
+    <div id="live-log" class="live-log" role="log" aria-label="Live robot events" aria-live="polite" tabindex="0"></div>
+  </section>
+  <footer><span id="message" role="status" aria-live="polite">Connecting for read-only inspection…</span><p>Stopping or closing the app retains holding torque. Both cameras close with the last app page.</p></footer>
+</main>
+<dialog id="test-dialog" aria-labelledby="test-title"><form method="dialog"><p class="eyebrow">LEADER–FOLLOWER TEST</p><h2 id="test-title">Calibration test readiness</h2><p id="test-readiness" role="status" aria-live="polite">Waiting for joint readings…</p><p>The follower immediately follows the leader, without startup alignment or an application speed cap. Large pose differences can cause sudden motion. Clear the path and keep the elbow bent.</p><p>Pose gaps, fast movement, tracking lag, and proximity to joint limits produce warnings. Stop & hold ends the test and retains holding torque. Motor faults and lost communication still stop commands.</p><div class="dialog-actions"><button class="button secondary" value="cancel">Cancel</button><button id="confirm-test" class="button primary" type="button" disabled>Start test</button></div></form></dialog>
+<dialog id="recalibrate-dialog" aria-labelledby="recalibrate-title"><form method="dialog">
+  <p class="eyebrow">BOTH ARMS / CALIBRATION HISTORY</p><h2 id="recalibrate-title">Choose a calibration</h2>
+  <p>The current calibration is kept as a checkpoint before changes. New calibrations are saved here too, so you can switch back later.</p>
+  <label class="checkpoint-label" for="calibration-checkpoint">Saved checkpoints · Local time</label>
+  <select id="calibration-checkpoint" aria-describedby="checkpoint-detail"></select>
+  <p id="checkpoint-detail" class="checkpoint-detail"></p><p id="checkpoint-errors" class="checkpoint-detail" hidden></p>
+  <p>Use a saved checkpoint to restore both arms and its matching reset pose, or start the guided center-and-range calibration. Either action releases torque. Keep both arms supported throughout.</p>
+  <label class="checkbox"><input id="calibration-supported" type="checkbox">Both arms are supported and ready for torque to be released.</label>
+  <div class="checkpoint-actions"><button id="restore-calibration" class="button primary" type="button" disabled>Use selected calibration</button><button id="confirm-recalibrate" class="button secondary" type="button" disabled>Start new calibration</button></div>
+  <div class="dialog-actions"><button class="button secondary" value="cancel">Cancel</button></div>
+</form></dialog>
+<dialog id="gripper-dialog" aria-labelledby="gripper-title"><form method="dialog">
+  <p class="eyebrow">FOLLOWER / MOTOR 6 ONLY</p><h2 id="gripper-title">Gripper force</h2>
+  <p>Adjust the gripper torque limit while the other joints keep following. Percentage sets the motor output limit; it is not a force measurement in newtons.</p>
+  <p id="gripper-current" class="force-current" role="status">Reading motor 6…</p>
+  <label class="checkpoint-label" for="force-percent">Motor output limit (%)</label>
+  <div class="force-inputs"><input id="force-slider" type="range" min="1" max="100" step="1" value="20" aria-label="Grip strength slider"><input id="force-percent" type="number" min="1" max="100" step="1" value="20" inputmode="numeric"></div>
+  <p id="force-guidance" class="force-guidance"></p>
+  <p id="gripper-feedback" class="force-feedback"></p>
+  <p id="force-notice" class="force-notice" role="status"></p>
+  <p class="force-note">Support the object when changing force: a lower setting can let it slip. A lower setting can still overload if the target keeps squeezing against the object. An existing overload still needs Clear Error &amp; Reset.</p>
+  <p class="force-note">This setting lasts until motor power is cycled. Open this panel again to read it after reconnecting. Calibration and motor protection settings are preserved.</p>
+  <div class="dialog-actions"><button class="button secondary" value="cancel">Close</button><button id="apply-force" class="button primary" type="button" disabled>Apply force</button><button id="force-stop" class="button stop" type="button" hidden>Stop &amp; hold</button></div>
+</form></dialog>
+<dialog id="release-dialog" aria-labelledby="release-title"><form method="dialog"><p class="eyebrow">RELEASE MOTOR TORQUE</p><h2 id="release-title">Support the follower arm first.</h2><p>Releasing torque lets the joints move freely. The arm may fall if it is not supported.</p><label class="checkbox"><input type="checkbox" id="supported">I am supporting the follower arm.</label><div class="dialog-actions"><button class="button secondary" value="cancel">Cancel</button><button id="confirm-release" class="button danger" type="button" disabled>Release torque</button></div></form></dialog>
+</body>
+</html>

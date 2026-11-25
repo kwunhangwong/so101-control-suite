@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>SO-101 · Camera Setup</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">⌗</span><div><span class="eyebrow">SO-101 / LOCAL WORKSPACE</span><h1>Camera Setup</h1></div></div>
+      <div class="header-actions"><span id="save-state" class="save-state">Loading</span><button id="revert" class="button secondary" disabled>Revert</button><button id="save" class="button primary" disabled>Save ROI <span aria-hidden="true">↗</span></button></div>
+    </header>
+    <nav class="camera-switcher" aria-label="Select camera to edit">
+      <button id="select-front" class="camera-tile" type="button" aria-pressed="true" disabled><canvas id="preview-front" width="320" height="180" aria-label="Front camera live preview"></canvas><span class="camera-tile-label">Front camera<span id="state-front" class="tag">Connecting</span></span></button>
+      <button id="select-wrist" class="camera-tile" type="button" aria-pressed="false" disabled><canvas id="preview-wrist" width="320" height="180" aria-label="Wrist camera live preview"></canvas><span class="camera-tile-label">Wrist camera<span id="state-wrist" class="tag">Connecting</span></span></button>
+    </nav>
+    <main class="workspace">
+      <section class="viewer" aria-labelledby="frame-heading">
+        <div class="panel-heading"><div><span class="eyebrow">SOURCE FRAME</span><h2 id="frame-heading">Front camera</h2></div><span id="source-badge" class="tag">REFERENCE IMAGE</span></div>
+        <div class="stage"><canvas id="frame" width="1920" height="1080" tabindex="0" aria-label="Front camera ROI editor. Drag inside the rectangle to move it, drag corners to resize, or drag outside to draw a new rectangle. Arrow keys move one pixel, Shift plus arrow keys move ten pixels."></canvas></div>
+        <div class="frame-footer"><span id="source-size" class="mono">1920 × 1080 px</span><span><i class="selection-dot" aria-hidden="true"></i> Selected region</span></div>
+        <div class="interaction-guide"><span>Drag inside to move</span><span>Drag corners to resize</span><span>Drag outside to redraw</span></div>
+      </section>
+      <aside class="sidebar">
+        <section class="panel" aria-labelledby="crop-heading">
+          <div class="panel-heading compact"><div><span class="eyebrow">SELECTED REGION</span><h2 id="crop-heading">Crop preview</h2></div><span id="crop-size" class="tag mono">710 × 550</span></div>
+          <div class="crop-stage"><canvas id="crop" width="710" height="550" aria-label="Preview of the selected region"></canvas></div>
+          <div class="bounds-heading"><h3>Pixel bounds</h3><span>Origin: top left</span></div>
+          <div class="bounds-grid">
+            <label for="left">Left <input id="left" type="number" min="0" step="1" inputmode="numeric"></label>
+            <label for="top">Top <input id="top" type="number" min="0" step="1" inputmode="numeric"></label>
+            <label for="right">Right <input id="right" type="number" min="1" step="1" inputmode="numeric"></label>
+            <label for="bottom">Bottom <input id="bottom" type="number" min="1" step="1" inputmode="numeric"></label>
+          </div>
+          <p class="coordinate-note">Right and bottom are exclusive. Coordinates use the full source resolution.</p>
+          <p id="bounds-error" class="error" role="alert"></p>
+        </section>
+        <section class="panel source-panel" aria-labelledby="source-heading">
+          <div class="panel-heading compact"><div><span class="eyebrow">CAMERA SETTINGS</span><h2 id="source-heading">Image adjustments</h2></div></div>
+          <p id="source-label">Saved front-camera reference</p>
+          <label class="auto-exposure"><input id="auto-exposure" type="checkbox" disabled> Auto exposure</label>
+          <label for="exposure">Exposure time <output id="exposure-value" for="exposure">—</output></label>
+          <div class="camera-control"><input id="exposure" type="range" min="1" max="5000" step="1" value="313" disabled><input id="exposure-ms" type="number" min="0.1" max="500" step="0.1" value="31.3" aria-label="Exposure time in milliseconds" disabled></div>
+          <label for="saturation">Saturation <output id="saturation-value" for="saturation">—</output></label>
+          <div class="camera-control"><input id="saturation" type="range" min="0" max="128" step="1" value="0" disabled><input id="saturation-number" type="number" min="0" max="128" step="1" value="0" aria-label="Saturation value" disabled></div>
+          <label for="contrast">Contrast <output id="contrast-value" for="contrast">—</output></label>
+          <div class="camera-control"><input id="contrast" type="range" min="0" max="1" step="1" value="0" disabled><input id="contrast-number" type="number" min="0" max="1" step="1" value="0" aria-label="Contrast value" disabled></div>
+          <div class="source-actions"><button id="apply-camera" class="button primary" disabled>Apply settings</button><button id="read-camera" class="button secondary">Read current settings</button><button id="connect-camera" class="button secondary" hidden>Reconnect camera</button></div>
+          <p id="camera-controls-status" class="coordinate-note" role="status">Reading hardware settings…</p>
+          <p class="coordinate-note">Select Front or Wrist above. Hardware settings affect that camera in every app, including Dataset Collection. Turn off Auto exposure to set time in milliseconds. Settings may reset when camera power is disconnected.</p>
+        </section>
+      </aside>
+    </main>
+    <footer class="app-footer"><p id="status" role="status" aria-live="polite">Loading the saved regions…</p><span id="config-path" class="mono">config/front_roi.json</span></footer>
+  </div>
+</body>
+</html>
