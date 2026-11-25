@@ -42,7 +42,7 @@ def task_folder(root, instruction, write_metadata=True):
 
 def episode_manifests(root, collection_mode=None):
     root = Path(root)
-    # Legacy task folders, Mode 03 buffers, and Mode 04 run/stage folders.
+    # Support episodes directly in a buffer, under a task, or under a run stage.
     paths = [*root.glob('episode_*/episode.json'), *root.glob('*/episode_*/episode.json'),
              *root.glob('*/stage_*/episode_*/episode.json')]
     if collection_mode:

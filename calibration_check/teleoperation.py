@@ -432,7 +432,7 @@ def main():
         if 'exclusively lock port' in str(error):
             if args.release and open_release_in_app(config):
                 return 0
-            print('The arm USB port is already in use. In the app, choose Stop & hold, then Release torque. Otherwise close other arm-control or Release Arm Terminal windows and retry. Torque was not switched off.')
+            print('The arm USB port is already in use. In the app, choose Stop & hold, then Release torque. Otherwise close other applications using the arm USB port and retry. Torque was not switched off.')
         else:
             print(f'Cannot continue: {error}')
         return 1

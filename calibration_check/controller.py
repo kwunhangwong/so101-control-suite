@@ -454,7 +454,7 @@ class CalibrationController:
             hold_error = self.follower.hold()
             error = error or hold_error
             self.update(phase='error' if error else 'holding', error=error, hz=None,
-                        message='Motion stopped. Torque was not switched off.' if error or stopped else 'Reset complete. Holding the saved central resting pose.')
+                        message='Motion stopped. Torque was not switched off.' if error or stopped else 'Reset complete. Holding the saved resting pose.')
 
     def _reset(self):
         target = self._reset_target()

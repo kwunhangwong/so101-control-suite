@@ -82,7 +82,7 @@ $('clean-buffer').addEventListener('change',()=>{cancelBufferDelete();cancelBuff
 function bufferLabels(){
   if(mode!=='bootstrap')return;
   const mode04=mode04Buffer();
-  $('clean-buffer-note').textContent=(mode04?'Mode 04 run/stage buffer. ':'')+'Confirmed edits replace recordings locally in place. Preprocess and upload to the GPU host separately when needed.';
+  $('clean-buffer-note').textContent=(mode04?'Mode 04 run/stage buffer. ':'')+'Confirmed edits replace recordings locally in place.';
   $('clean-delete-note').textContent=mode04?'Permanently removes this local rollout, both camera views, robot data and logs. Other episodes and stages are kept.':'Permanently removes this local rollout and its local derived copies. Original seeds and other episodes are kept.';
   $('clean-delete-yes').textContent='Delete local episode';
   $('clean-help').textContent='No-op removal and ordinary exclusions join retained frames. Remove section & split keeps separate sequences inside this same episode folder. Existing split boundaries are preserved. Changes are local and permanent after confirmation.';
@@ -210,7 +210,7 @@ async function mutate(action,body){
       for(const key of drafts.keys())if([result.buffer_id,result.source_id].some(b=>key.startsWith(`bootstrap:${b}:`)))drafts.delete(key);
       cancelBufferMerge();episode=null;$('clean-editor').hidden=true;
       saving=false;await refreshBuffers();
-      $('clean-delete-status').textContent=`Merged ${result.episodes_merged} episodes into ${result.buffer_id}: ${result.episodes_total} episodes, ${result.seed_count} original seeds. Prepare local buffer before starting GPT again.`;
+      $('clean-delete-status').textContent=`Merged ${result.episodes_merged} episodes into ${result.buffer_id}: ${result.episodes_total} episodes, ${result.seed_count} original seeds.`;
       return;
     }
     if(result.action==='delete-buffer'){
